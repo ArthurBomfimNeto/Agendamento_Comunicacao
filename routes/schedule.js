@@ -1,49 +1,164 @@
 const express = require('express');
 const router = express.Router();
+const mysql = require('../mysql').pool;
 
-router.get('/', (req, res, next) =>{
-    res.status(200).send({
-        message: 'Test GET'
+router.get('/', (req, res, next) => {
+    mysql.getConnection((error, conn) => {
+        if (error) { return res.status(500).send({ error: error }) }
+        conn.query(
+            'SELECT * FROM schedule',
+            (error, result, field) => {
+                if (error) { return res.status(500).send({ error: error }) }
+                const response = {
+                    quantidade: result.length,
+                    schedule: result.map(prod => {
+                        return {
+                            date_time: prod.date_time,
+                            receiver: prod.receiver,
+                            message: prod.message,
+                            status: prod.status,
+                            type_message: prod.type_message,
+                            request: {
+                                type: 'GET',
+                                description: 'Returns the specific scheduling details',
+                                url: 'http://localhost:3030/schedule/' + prod.id_schedule
+                            }
+                        }
+                    })
+                }
+                return res.status(200).send(response)
+            }
+        )
+
     });
 });
- 
+
 router.post('/', (req, res, next) => {
-
-    const schedule = {
-        nome: req.body.nome,
-        preco: req.body.preco
-    }
-
-    res.status(201).send({
-        message:'Test POST',
-        created : schedule
+    mysql.getConnection((error, conn) => {
+        conn.query(`INSERT INTO schedule (date_time, receiver, message, status, type_message) 
+                    VALUES (?, ?, ?, ?, ?)`,
+            [req.body.date_time, req.body.receiver, req.body.message, req.body.status, req.body.type_message],
+            (error, result, field) => {
+                conn.release();
+                if (error) { return res.status(500).send({ error: error }) }
+                const response = {
+                    message: 'Schedule successfully entered',
+                    scheduleCreated: {
+                        date_time: req.body.date_time,
+                        receiver: req.body.receiver,
+                        message: req.body.message,
+                        status: req.body.status,
+                        type_message: req.body.type_message,
+                        request: {
+                            type: 'POST',
+                            description: 'Inserts the schedule',
+                            url: 'http://localhost:3030/schedule'
+                        }
+                    }
+                }
+                return res.status(200).send(response)
+            }
+        )
     });
 });
 
-router.get('/:id_schedule', (req, res, next) =>{
-    const id = req.params.id_schedule
-    if(id == 1 ){
-        res.status(200).send({
-            message: 'Test GET especial',
-            id:id
-        });
-    }else{
-        res.status(200).send({
-            message: 'Test GET ',
-            id:id
-        });
-    }
+router.get('/:id_schedule', (req, res, next) => {
+    mysql.getConnection((error, conn) => {
+        if (error) { return res.status(500).send({ error: error }) }
+        conn.query(
+            'SELECT * FROM schedule WHERE id_schedule = ?',
+            [req.params.id_schedule],
+            (error, result, field) => {
+                if (error) { return res.status(500).send({ error: error }) }
+                if (result.length == 0) {
+                    return res.status(404).send({
+                        message: 'No appointment was found with this id'
+                    })
+                }
+                const response = {
+                    Schedules: {
+                        id_schedule: result[0].id_schedule,
+                        date_time: result[0].date_time,
+                        receiver: result[0].receiver,
+                        message: result[0].message,
+                        status: result[0].status,
+                        type_message: result[0].type_message,
+                        request: {
+                            type: 'GET',
+                            description: 'Returns a schedule',
+                            url: 'http://localhost:3030/schedule/'[0].id_schedule
+                        }
+                    }
+                }
+                return res.status(200).send(response)
+            }
+        )
+    });
 });
 
 router.patch('/', (req, res, next) => {
-    res.status(201).send({
-        message:'Test PATCH'
+    mysql.getConnection((error, conn) => {
+        if (error) { return res.status(500).send({ error: error }) }
+        conn.query(`UPDATE schedule
+                     SET date_time = ?,
+                          receiver = ?,
+                          message = ?,
+                          status = ?,
+                          type_message = ? 
+                    WHERE id_schedule = ?`,
+            [
+                req.body.date_time,
+                req.body.receiver,
+                req.body.message,
+                req.body.status,
+                req.body.type_message,
+                req.body.id_schedule
+            ],
+            (error, result, field) => {
+                conn.release();
+                if (error) { return res.status(500).send({ error: error }) }
+                const response = {
+                    message: 'Schedule updated successfully',
+                    ActualizedScheduling: {
+                        id_schedule: req.body.id_schedule,
+                        date_time: req.body.date_time,
+                        receiver: req.body.receiver,
+                        message: req.body.message,
+                        status: req.body.status,
+                        type_message: req.body.type_message,
+                        request: {
+                            type: 'PATCH',
+                            description: 'Updated scheduling details',
+                            url: 'http://localhost:3030/schedule/' + req.body.id_produtos
+                        }
+                    }
+                }
+                res.status(202).send(response);
+            }
+        )
     });
 });
 
 router.delete('/', (req, res, next) => {
-    res.status(201).send({
-        message:'Test DELETE'
+    mysql.getConnection((error, conn) => {
+        if (error) { return res.status(500).send({ error: error }) }
+        conn.query(`DELETE FROM schedule WHERE id_schedule = ?`,
+            [req.body.id_schedule],
+            (error, result, field) => {
+                conn.release();
+                if (error) { return res.status(500).send({ error: error }) }
+
+                const response = {
+                    message: 'Scheduling successfully removed',
+                    request: {
+                        tipo: 'DELETE',
+                        descricao: 'Removes scheduling',
+                        url: 'http://localhost:3030/schedule'
+                    }
+                }
+                res.status(202).send(response);
+            }
+        )
     });
 });
 
