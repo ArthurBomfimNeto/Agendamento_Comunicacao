@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mysql = require('../mysql').pool;
 const bcrypt = require('bcrypt');
-
+const jwt = require('jsonwebtoken');
 
 router.post('/register', (req, res, next) => {
     mysql.getConnection((error, conn) => {
@@ -40,4 +40,40 @@ router.post('/register', (req, res, next) => {
     });
 });
 
+router.post('/login', (req, res, next) => {
+    mysql.getConnection((error, conn) => {
+        if (error) { return res.status(500).send({ error: error }) }
+        conn.query('SELECT * FROM users WHERE email = ?',
+        [req.body.email],
+        (error, results) => {
+            conn.release();
+            if (error) {return res.status(500).send({error: error})}
+            if (results.length < 1){
+                return res.status(401).send({ message: 'Authentication failure'})
+            }
+            bcrypt.compare(req.body.password, results[0].password, (error, result) => {
+                if (error){
+                    return res.status(401).send({ message: 'Authentication failure'}) 
+                }
+                if (result) {
+                    console.log(result.id_user)
+                    const token = jwt.sign({
+                        id_user: results[0].id_user,
+                        email: results[0].email 
+                    }, 
+                    process.env.JWT_KEY,
+                    {
+                        expiresIn: "2h"
+                    });
+                    return res.status(200).send({ 
+                        message : 'Successfully authenticated',
+                        token: token
+                    })
+                }
+                return res.status(401).send({ message: 'Authentication failure'})
+            })
+        })
+})
+
+})
 module.exports = router;
