@@ -3,13 +3,15 @@ const app = express();
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
-const rotaSchedule = require('./routes/schedule')
+const routeSchedule = require('./routes/schedule')
+const routeUser = require('./routes/users')
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
 
-app.use('/schedule', rotaSchedule);
+app.use('/schedule', routeSchedule);
+app.use('/users', routeUser)
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
