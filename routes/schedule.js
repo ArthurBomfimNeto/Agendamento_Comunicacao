@@ -4,10 +4,12 @@ const login = require('../middleware/login');
 
 const scheduleController = require('../controllers/schedule_controller');
 
+
 router.get('/', scheduleController.getScheduling);
-router.post('/',login, scheduleController.postScheduling);
-router.patch('/',login, scheduleController.patchScheduling);
+router.use(login);
+router.post('/', scheduleController.postScheduling);
+router.patch('/', scheduleController.patchScheduling);
 router.get('/:id_schedule', scheduleController.get1Scheduling);
-router.delete('/:id_schedule',login, scheduleController.deleteScheduling);
+router.delete('/:id_schedule', scheduleController.deleteScheduling);
 
 module.exports = router;

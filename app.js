@@ -10,9 +10,6 @@ app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false}));
 app.use(bodyParser.json());
 
-app.use('/schedule', routeSchedule);
-app.use('/users', routeUser)
-
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header(
@@ -25,6 +22,9 @@ app.use((req, res, next) => {
     }
     next();
 });
+
+app.use('/schedule', routeSchedule);
+app.use('/users', routeUser)
 
 app.use((req, res, next) => {
     const erro = new Error('Not found');
