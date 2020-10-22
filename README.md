@@ -59,43 +59,42 @@ base do arquivo modelo nodemon.exemple.json alterando as variáveis de ambiente 
 # Rotas
 
 
-Rota para cadastrar um usúario 
+Rota para cadastrar um usúario:
 
 	POST http://localhost:3000/users/register
 
 
-Rota para realizar o login de um usúario, que ira gerar o token.
+Rota para realizar o login de um usúario, que ira gerar o token:
 
 	POST http://localhost:3000/users/login
 
-Rota para visualizar todos os agendamentos.
+Rota para visualizar todos os agendamentos:
 	
 	GET http://localhost:3000/schedule/
 
-Rota para visualizar um agendamento 
-   sh	shfmt -d .
+Rota para visualizar um agendamento :
 
-      GET http://localhost:3000/schedule/:id_schedule
+    GET http://localhost:3000/schedule/:id_schedule
 
 Rota para inserir um agendamento:
 
      POST http://localhost:3000/schedule/
 
-Rota para atualizar um agendamento
+Rota para atualizar um agendamento:
    
-      PATCH http://localhost:3000/schedule/:id_schedule
+    PATCH http://localhost:3000/schedule/:id_schedule
 
-Rota para remover um agendamento
+Rota para remover um agendamento:
 
 	DELETE http://localhost:3000/schedule/:id_schedule
 
 
 
 # Autenticação
-Copiar o token gerado pelo login:
+***Copiar o token gerado pelo login:***
 
 ![token1](https://user-images.githubusercontent.com/54382866/96829329-d1b07700-140f-11eb-8f9b-20f9f2d7ec4e.png)
-Authorization com Bearer Token:
+***Authorization com Bearer Token:***
 
 
 ![autentication](https://user-images.githubusercontent.com/54382866/96829305-bfced400-140f-11eb-8d87-fa78673f8929.png)
