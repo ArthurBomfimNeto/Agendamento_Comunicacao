@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 exports.registerUsers = async (req, res, next) => {
- 
+
     try {
         const result = await mysql.execute('SELECT * FROM users WHERE email = ?', [req.body.email]);
         if (result.length > 0) {
@@ -13,10 +13,10 @@ exports.registerUsers = async (req, res, next) => {
         const hash = await bcrypt.hashSync(req.body.password, 10);
 
         query = 'INSERT INTO users (email, password) VALUES (?,?)';
-        const results = await mysql.execute(query, [req.body.email,hash]);
+        const results = await mysql.execute(query, [req.body.email, hash]);
 
         const response = {
-            message: 'Usuário criado com sucesso',
+            message: 'User created successfully',
             createdUser: {
                 user_id: results.insertId,
                 email: req.body.email

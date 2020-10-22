@@ -3,8 +3,11 @@ const mysql = require('../mysql');
 exports.getScheduling = async (req, res, next) => {
     try {
         const result = await mysql.execute("SELECT * FROM schedule")
+        if (!result){
+            return res.status(404).send({ error: error });
+        }
         const response = {
-            quantidade: result.length,
+            amount: result.length,
             schedule: result.map(prod => {
                 return {
                     id_schedule: prod.id_schedule,
@@ -108,7 +111,7 @@ exports.patchScheduling = async (req, res, next) => {
             req.body.message,
             req.body.status,
             req.body.type_message,
-            req.body.id_schedule
+            req.params.id_schedule
         ]);
         const response = {
             message: 'Schedule updated successfully',
@@ -122,7 +125,7 @@ exports.patchScheduling = async (req, res, next) => {
                 request: {
                     type: 'PATCH',
                     description: 'Updated scheduling details',
-                    url: 'http://localhost:3030/schedule/' + req.body.id_produtos
+                    url: 'http://localhost:3030/schedule/' + req.body.id_schedule
                 }
             }
         }
@@ -141,8 +144,8 @@ exports.deleteScheduling = async (req, res, next) => {
         const response = {
             message: 'Scheduling successfully removed',
             request: {
-                tipo: 'DELETE',
-                descricao: 'Removes scheduling',
+                type: 'DELETE',
+                description: 'Removes scheduling',
                 url: 'http://localhost:3030/schedule'
             }
         }
@@ -151,5 +154,4 @@ exports.deleteScheduling = async (req, res, next) => {
         return res.status(500).send({ error: error })
     }
 };
-
 

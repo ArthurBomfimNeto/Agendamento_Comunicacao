@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js --ignore __tests__",
+    "test": "jest --coverage"
   },
   "author": "",
   "license": "ISC",
@@ -19,6 +20,8 @@
     "mysql": "^2.18.1"
   },
   "devDependencies": {
+    "jest": "^26.6.0",
+    "jest-mysql": "^1.0.0",
     "nodemon": "^2.0.5"
   }
 }

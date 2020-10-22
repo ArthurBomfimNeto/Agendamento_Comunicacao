@@ -4,10 +4,10 @@ USE `schedule` ;
 CREATE TABLE IF NOT EXISTS `schedule`.`schedule` (
   `id_schedule` INT NOT NULL AUTO_INCREMENT,
   `date_time` DATETIME NOT NULL,
-  `receiver` VARCHAR(60) NOT NULL,
-  `message` VARCHAR(1000) NOT NULL,
-  `status` VARCHAR(60) NOT NULL,
-  `type_message` VARCHAR(60) NOT NULL,
+  `receiver` VARCHAR(100) NOT NULL,
+  `message` TEXT NOT NULL,
+  `status` VARCHAR(100) NOT NULL,
+  `type_message` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id_schedule`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 25
