@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS `schedule`.`schedule` (
   `type_message` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id_schedule`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 25
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -20,5 +19,4 @@ CREATE TABLE IF NOT EXISTS `schedule`.`users` (
   `password` VARCHAR(100) NOT NULL,
   PRIMARY KEY (`id_user`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 9
 DEFAULT CHARACTER SET = utf8;
